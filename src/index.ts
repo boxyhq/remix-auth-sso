@@ -1,35 +1,56 @@
 import { SessionStorage } from "@remix-run/server-runtime";
+import { AuthenticateOptions, StrategyVerifyCallback } from "remix-auth";
 import {
-  AuthenticateOptions,
-  Strategy,
-  StrategyVerifyCallback,
-} from "remix-auth";
+  type OAuth2Profile,
+  type OAuth2StrategyVerifyParams,
+  OAuth2Strategy,
+} from "remix-auth-oauth2";
 
 /**
  * This interface declares what configuration the strategy needs from the
  * developer to correctly work.
  */
-export interface MyStrategyOptions {
-  something: "You may need";
+export interface BoxyHQSAMLStrategyOptions {
+  issuer: string;
+  clientID: string;
+  clientSecret: string;
+  callbackURL: string;
 }
 
-/**
- * This interface declares what the developer will receive from the strategy
- * to verify the user identity in their system.
- */
-export interface MyStrategyVerifyParams {
-  something: "Dev may need";
+export interface BoxyHQSAMLProfile extends OAuth2Profile {
+  id: string;
+  email: string;
+  firstName?: string;
+  lastName?: string;
 }
 
-export class MyStrategy<User> extends Strategy<User, MyStrategyVerifyParams> {
-  name = "change-me";
+export class BoxyHQSAMLStrategy<User> extends OAuth2Strategy<
+  User,
+  BoxyHQSAMLProfile,
+  never
+> {
+  name = "boxyhq-saml";
+  private userInfoURL: string;
 
   constructor(
-    options: MyStrategyOptions,
-    verify: StrategyVerifyCallback<User, MyStrategyVerifyParams>
+    options: BoxyHQSAMLStrategyOptions,
+    verify: StrategyVerifyCallback<
+      User,
+      OAuth2StrategyVerifyParams<BoxyHQSAMLProfile, never>
+    >
   ) {
-    super(verify);
-    // do something with the options here
+    super(
+      {
+        authorizationURL: `${options.issuer}/api/oauth/authorize`,
+        tokenURL: `${options.issuer}/api/oauth/token`,
+        clientID: options.clientID,
+        clientSecret: options.clientSecret,
+        callbackURL: options.callbackURL,
+      },
+      verify
+    );
+
+    this.userInfoURL = `${options.issuer}/api/oauth/userinfo`;
   }
 
   async authenticate(
@@ -37,13 +58,33 @@ export class MyStrategy<User> extends Strategy<User, MyStrategyVerifyParams> {
     sessionStorage: SessionStorage,
     options: AuthenticateOptions
   ): Promise<User> {
-    return await this.failure(
-      "Implement me!",
-      request,
-      sessionStorage,
-      options
-    );
-    // Uncomment me to do a success response
-    // this.success({} as User, request, sessionStorage, options);
+    if (options.context?.clientID && options.context?.clientSecret) {
+      this.clientID = options.context.clientID;
+      this.clientSecret = options.context.clientSecret;
+    }
+    return super.authenticate(request, sessionStorage, options);
+  }
+
+  protected authorizationParams(): URLSearchParams {
+    const urlSearchParams: Record<string, string> = {
+      provider: "saml",
+    };
+
+    return new URLSearchParams(urlSearchParams);
+  }
+
+  protected async userProfile(accessToken: string): Promise<BoxyHQSAMLProfile> {
+    let response = await fetch(this.userInfoURL, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+
+    let data: BoxyHQSAMLProfile = await response.json();
+
+    let profile: BoxyHQSAMLProfile = {
+      ...data,
+      provider: this.name,
+    };
+
+    return profile;
   }
 }
