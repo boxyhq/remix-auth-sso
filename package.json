@@ -1,6 +1,7 @@
 {
-  "name": "remix-auth-strategy-template",
-  "version": "0.0.0",
+  "name": "remix-auth-saml",
+  "version": "1.0.0",
+  "description": "A SAML strategy for Remix Auth, based on the OAuth2Strategy",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "scripts": {
@@ -15,8 +16,15 @@
     "remix-auth",
     "auth",
     "authentication",
-    "strategy"
+    "strategy",
+    "saml2",
+    "oauth2"
   ],
+  "author": {
+    "name": "BoxyHQ",
+    "email": "aswin@boxyhq.com",
+    "url": "https://boxyhq.com"
+  },
   "license": "MIT",
   "files": [
     "build",
