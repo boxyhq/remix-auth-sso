@@ -1,5 +1,5 @@
 {
-  "name": "remix-auth-saml",
+  "name": "@boxyhq/remix-auth-saml",
   "version": "1.0.0",
   "description": "A SAML strategy for Remix Auth, based on the OAuth2Strategy",
   "main": "./build/index.js",
