@@ -1,37 +1,6 @@
-# Remix Auth - Strategy Template
+# BoxyHQSAMLStrategy
 
-> A template for creating a new Remix Auth strategy.
-
-If you want to create a new strategy for Remix Auth, you could use this as a template for your repository.
-
-The repo installs the latest version of Remix Auth and do the setup for you to have tests, linting and typechecking.
-
-## How to use it
-
-1. In the `package.json` change `name` to your strategy name, also add a description and ideally an author, repository and homepage keys.
-2. In `src/index.ts` change the `MyStrategy` for the strategy name you want to use.
-3. Implement the strategy flow inside the `authenticate` method. Use `this.success` and `this.failure` to correctly send finish the flow.
-4. In `tests/index.test.ts` change the tests to use your strategy and test it. Inside the tests you have access to `jest-fetch-mock` to mock any fetch you may need to do.
-5. Once you are ready, set the secrets on Github
-   - `NPM_TOKEN`: The token for the npm registry
-   - `GIT_USER_NAME`: The you want the bump workflow to use in the commit.
-   - `GIT_USER_EMAIL`: The email you want the bump workflow to use in the commit.
-
-## Scripts
-
-- `build`: Build the project for production using the TypeScript compiler (strips the types).
-- `typecheck`: Check the project for type errors, this also happens in build but it's useful to do in development.
-- `lint`: Runs ESLint againt the source codebase to ensure it pass the linting rules.
-- `test`: Runs all the test using Jest.
-
-## Documentations
-
-To facilitate creating a documentation for your strategy, you can use the following Markdown
-
-```markdown
-# Strategy Name
-
-<!-- Description -->
+The BoxyHQ SAML strategy is used to authenticate customers (typically enterprises having a SAML IdP) of your SaaS application. It extends the OAuth2Strategy.
 
 ## Supported runtimes
 
@@ -42,7 +11,131 @@ To facilitate creating a documentation for your strategy, you can use the follow
 
 <!-- If it doesn't support one runtime, explain here why -->
 
-## How to use
+## BoxyHQ SAML Service
 
-<!-- Explain how to use the strategy, here you should tell what options it expects from the developer when instantiating the strategy -->
+BoxyHQ SAML is an open source service that handles the SAML login flow as an OAuth 2.0 flow, abstracting away all the complexities of the SAML protocol.
+
+You can deploy BoxyHQ SAML as a separate service or embed it into your app using our NPM library. [Check out the documentation for more details](https://boxyhq.com/docs/jackson/deploy)
+
+## Configuration
+
+SAML login requires a configuration for every tenant of yours. One common method is to use the domain for an email address to figure out which tenant they belong to. You can also use a unique tenant ID (string) from your backend for this, typically some kind of account or organization ID.
+
+Check out the [documentation](https://boxyhq.com/docs/jackson/saml-flow#2-saml-config-api) for more details.
+
+## Usage
+### Install the strategy
+```bash
+npm install @boxyhq/remix-auth-saml
+```
+
+### Create the strategy instance
+```ts
+// app/utils/auth.server.ts
+import { Authenticator } from "remix-auth";
+import {
+  BoxyHQSAMLStrategy,
+  type BoxyHQSAMLProfile,
+} from "@boxyhq/remix-auth-saml";
+
+// Create an instance of the authenticator, pass a generic with what your
+// strategies will return and will be stored in the session
+export const authenticator = new Authenticator<BoxyHQSAMLProfile>(sessionStorage);
+
+
+auth.use(
+  new BoxyHQSAMLStrategy(
+    {
+      issuer: process.env.BOXYHQSAML_ISSUER!,
+      clientID: "dummy", // The dummy here is necessary if the tenant and product are set dynamically from the client side
+      clientSecret: "dummy", // The dummy here is necessary if the tenant and product are set dynamically from the client side
+      callbackURL: new URL("/auth/saml/callback", BASE_URL).toString(),
+    },
+    async ({ profile }) => {
+      return profile;
+    }
+  )
+);
+```
+
+### Setup your routes
+
+```tsx
+// app/routes/login.tsx
+export default function Login() {
+  return (
+    <Form
+      method="post"
+      action="/auth/saml"
+    >
+      {/* We will be using user email to identify the tenant*/}
+      <label htmlFor="email">Email</label>
+      <input
+        id="email"
+        type="email"
+        name="email"
+        placeholder="johndoe@example.com"
+        required
+      />
+      {/* Product can also be set dynamically, set to `demo` here */}
+      <input type="text" name="product" hidden defaultValue="demo" />
+      <button type="submit">
+        Sign In with SSO
+      </button>
+    </Form>
+  );
+}
+
+```
+
+```tsx
+// app/routes/auth/saml.tsx
+import { ActionFunction, json } from "remix";
+import { auth } from "~/auth.server";
+import invariant from "tiny-invariant";
+
+type PostError = {
+  email?: boolean;
+  product?: boolean;
+};
+export const action: ActionFunction = async ({ request }) => {
+  const formData = await request.formData();
+
+  const email = formData.get("email");
+  const product = await formData.get("product");
+
+  const errors: PostError = {};
+  if (!email) errors.email = true;
+  if (!product) errors.product = true;
+
+  if (Object.keys(errors).length) {
+    return json(errors);
+  }
+
+  invariant(typeof email === "string");
+
+  const tenant = email.split("@")[1];
+  return await auth.authenticate("boxyhq-saml", request, {
+    successRedirect: "/private",
+    failureRedirect: "/",
+    context: {
+      clientID: `tenant=${tenant}&product=${product}`,
+      clientSecret: "dummy",
+    },
+  });
+};
+```
+
+```tsx
+// app/routes/auth/saml/callback.tsx
+import type { LoaderFunction } from "remix";
+import { auth } from "~/auth.server";
+
+export const loader: LoaderFunction = async ({ request, params }) => {
+  return auth.authenticate("boxyhq-saml", request, {
+    successRedirect: "/private",
+    failureRedirect: "/",
+  });
+};
+
 ```
