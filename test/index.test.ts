@@ -24,7 +24,7 @@ describe(BoxyHQSAMLStrategy, () => {
     expect(strategy.name).toBe("boxyhq-saml");
   });
 
-  test("should allow setting the client-ID/Secret from the options", async () => {
+  test("should allow setting the clientID/Secret from the options", async () => {
     const strategy = new BoxyHQSAMLStrategy(options, verify);
 
     const request = new Request("https://example.app/auth/boxy-saml");
@@ -45,7 +45,7 @@ describe(BoxyHQSAMLStrategy, () => {
     }
   });
 
-  test("should allow setting the client-ID/Secret dynamically from the context", async () => {
+  test("should allow setting the clientID/Secret dynamically from the context", async () => {
     const strategy = new BoxyHQSAMLStrategy(options, verify);
 
     const request = new Request("https://example.app/auth/boxy-saml");
@@ -69,6 +69,29 @@ describe(BoxyHQSAMLStrategy, () => {
       expect(redirectUrl.searchParams.get("client_id")).toBe(
         `tenant=boxyhq.com&product=demo`
       );
+    }
+  });
+
+  test("should correctly format the authorization URL", async () => {
+    const strategy = new BoxyHQSAMLStrategy(options, verify);
+
+    const request = new Request("https://example.app/auth/boxy-saml");
+    try {
+      await strategy.authenticate(request, sessionStorage, {
+        successRedirect: "/private",
+        failureRedirect: "/",
+        sessionKey: "",
+      });
+    } catch (error) {
+      if (!(error instanceof Response)) throw error;
+      let location = error.headers.get("Location");
+
+      if (!location) throw new Error("No redirect header");
+
+      let redirectUrl = new URL(location);
+      expect(redirectUrl.hostname).toBe("jackson-demo.boxyhq.com");
+      expect(redirectUrl.pathname).toBe("/api/oauth/authorize");
+      expect(redirectUrl.searchParams.get("provider")).toBe(`saml`);
     }
   });
 });
