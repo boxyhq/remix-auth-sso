@@ -1,6 +1,10 @@
 {
   "name": "@boxyhq/remix-auth-saml",
   "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/boxyhq/remix-auth-saml"
+  },
   "description": "A SAML strategy for Remix Auth, based on the OAuth2Strategy",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
