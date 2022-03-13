@@ -15,7 +15,7 @@ The BoxyHQ SAML strategy is used to authenticate customers (typically enterprise
 
 BoxyHQ SAML is an open source service that handles the SAML login flow as an OAuth 2.0 flow, abstracting away all the complexities of the SAML protocol.
 
-You can deploy BoxyHQ SAML as a separate service or embed it into your app using our NPM library. [Check out the documentation for more details](https://boxyhq.com/docs/jackson/deploy)
+You can deploy BoxyHQ SAML as a separate service. [Check out the documentation for more details](https://boxyhq.com/docs/jackson/deploy)
 
 ## Configuration
 
@@ -46,10 +46,10 @@ export const authenticator = new Authenticator<BoxyHQSAMLProfile>(sessionStorage
 auth.use(
   new BoxyHQSAMLStrategy(
     {
-      issuer: process.env.BOXYHQSAML_ISSUER!,
+      issuer: "http://localhost:5225", // point this to the hosted jackson service
       clientID: "dummy", // The dummy here is necessary if the tenant and product are set dynamically from the client side
       clientSecret: "dummy", // The dummy here is necessary if the tenant and product are set dynamically from the client side
-      callbackURL: new URL("/auth/saml/callback", BASE_URL).toString(),
+      callbackURL: new URL("/auth/saml/callback", process.env.BASE_URL).toString(), // BASE_URL should point to the application URL
     },
     async ({ profile }) => {
       return profile;
