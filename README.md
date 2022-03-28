@@ -1,6 +1,6 @@
 # BoxyHQSAMLStrategy
 
-The BoxyHQ SAML strategy is used to authenticate customers (typically enterprises having a SAML IdP) of your SaaS application. It extends the OAuth2Strategy.
+The BoxyHQ SAML strategy can be used to enable SAML login in your remix app. It extends the OAuth2Strategy.
 
 # Demo
 Checkout the demo at https://github.com/boxyhq/jackson-remix-auth
