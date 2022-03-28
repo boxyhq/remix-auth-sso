@@ -116,7 +116,7 @@ export const action: ActionFunction = async ({ request }) => {
   }
 
   invariant(typeof email === "string");
-
+  // Get the tenant from the domain
   const tenant = email.split("@")[1];
   return await auth.authenticate("boxyhq-saml", request, {
     successRedirect: "/private",
