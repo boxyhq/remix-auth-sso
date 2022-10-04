@@ -3,6 +3,7 @@
 The BoxyHQ SAML strategy can be used to enable SAML login in your remix app. It extends the OAuth2Strategy.
 
 # Demo
+
 Checkout the demo at https://github.com/boxyhq/jackson-remix-auth
 
 ## Supported runtimes
@@ -27,12 +28,15 @@ SAML login requires a configuration for every tenant of yours. One common method
 Check out the [documentation](https://boxyhq.com/docs/jackson/saml-flow#2-saml-config-api) for more details.
 
 ## Usage
+
 ### Install the strategy
+
 ```bash
 npm install @boxyhq/remix-auth-saml
 ```
 
 ### Create the strategy instance
+
 ```ts
 // app/utils/auth.server.ts
 import { Authenticator } from "remix-auth";
@@ -43,8 +47,9 @@ import {
 
 // Create an instance of the authenticator, pass a generic with what your
 // strategies will return and will be stored in the session
-export const authenticator = new Authenticator<BoxyHQSAMLProfile>(sessionStorage);
-
+export const authenticator = new Authenticator<BoxyHQSAMLProfile>(
+  sessionStorage
+);
 
 auth.use(
   new BoxyHQSAMLStrategy(
@@ -52,7 +57,10 @@ auth.use(
       issuer: "http://localhost:5225", // point this to the hosted jackson service
       clientID: "dummy", // The dummy here is necessary if the tenant and product are set dynamically from the client side
       clientSecret: "dummy", // The dummy here is necessary if the tenant and product are set dynamically from the client side
-      callbackURL: new URL("/auth/saml/callback", process.env.BASE_URL).toString(), // BASE_URL should point to the application URL
+      callbackURL: new URL(
+        "/auth/saml/callback",
+        process.env.BASE_URL
+      ).toString(), // BASE_URL should point to the application URL
     },
     async ({ profile }) => {
       return profile;
@@ -67,10 +75,7 @@ auth.use(
 // app/routes/login.tsx
 export default function Login() {
   return (
-    <Form
-      method="post"
-      action="/auth/saml"
-    >
+    <Form method="post" action="/auth/saml">
       {/* We will be using user email to identify the tenant*/}
       <label htmlFor="email">Email</label>
       <input
@@ -82,13 +87,10 @@ export default function Login() {
       />
       {/* Product can also be set dynamically, set to `demo` here */}
       <input type="text" name="product" hidden defaultValue="demo" />
-      <button type="submit">
-        Sign In with SSO
-      </button>
+      <button type="submit">Sign In with SSO</button>
     </Form>
   );
 }
-
 ```
 
 ```tsx
@@ -140,5 +142,4 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     failureRedirect: "/",
   });
 };
-
 ```
