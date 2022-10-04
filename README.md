@@ -25,7 +25,7 @@ You can deploy SAML Jackson as a separate service. [Check out the documentation 
 
 SAML login requires a configuration for every tenant of yours. One common method is to use the domain for an email address to figure out which tenant they belong to. You can also use a unique tenant ID (string) from your backend for this, typically some kind of account or organization ID.
 
-Check out the [documentation](https://boxyhq.com/docs/jackson/saml-flow#2-saml-config-api) for more details.
+Check out the [documentation](https://boxyhq.com/docs/jackson/sso-flow/#21-add-connection) for more details.
 
 ## Usage
 
