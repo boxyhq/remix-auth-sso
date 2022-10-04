@@ -17,7 +17,7 @@ Checkout the demo at https://github.com/boxyhq/jackson-remix-auth
 
 ## SAML Jackson Service
 
-SAML Jackson is an open source service that handles the SAML login flow as an OAuth 2.0 flow, abstracting away all the complexities of the SAML protocol.
+SAML Jackson is an open-source service that handles the SAML login flow as an OAuth 2.0 flow, abstracting away all the complexities of the SAML protocol.
 
 You can deploy SAML Jackson as a separate service. [Check out the documentation for more details](https://boxyhq.com/docs/jackson/deploy)
 
