@@ -1,6 +1,8 @@
 # BoxyHQSSOStrategy
 
-The BoxyHQ SSO strategy can be used to enable Single Sign-On (SSO) in your remix app. It extends the OAuth2Strategy.
+**Attention ⚠️**: We have deprecated the earlier strategy `BoxyHQSAMLStrategy` (npm package: `@boxyhq/remix-auth-saml`). In case you are using that one please consider changing over to this strategy.
+
+The BoxyHQSSOStrategy can be used to enable Single Sign-On (SSO) in your remix app. It extends the OAuth2Strategy.
 
 # Demo
 
