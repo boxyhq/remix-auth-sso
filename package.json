@@ -5,7 +5,7 @@
     "type": "git",
     "url": "https://github.com/boxyhq/remix-auth-sso"
   },
-  "description": "A SSO strategy for Remix Auth, based on the OAuth2Strategy",
+  "description": "An SSO strategy for Remix Auth, based on the OAuth2Strategy",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "scripts": {
