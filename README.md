@@ -45,7 +45,7 @@ import { Authenticator } from "remix-auth";
 import {
   BoxyHQSSOStrategy,
   type BoxyHQSSOProfile,
-} from "@boxyhq/remix-auth-saml";
+} from "@boxyhq/remix-auth-sso";
 
 // Create an instance of the authenticator, pass a generic with what your
 // strategies will return and will be stored in the session
