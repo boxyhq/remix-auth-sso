@@ -19,7 +19,7 @@ Checkout the demo at https://github.com/boxyhq/jackson-remix-auth
 
 ## SAML Jackson Service
 
-SAML Jackson implements SSO as an OAuth 2.0 flow, abstracting away all the complexities of the underlying SAML/OIDC protocol.
+SAML Jackson implements SSO as an OAuth 2.0 or OpenID Connect flow, abstracting away all the complexities of the underlying SAML/OIDC protocol.
 
 You can deploy SAML Jackson as a separate service. [Check out the documentation for more details](https://boxyhq.com/docs/jackson/deploy)
 
@@ -60,7 +60,7 @@ auth.use(
       clientID: "dummy", // The dummy here is necessary if the tenant and product are set dynamically from the client side
       clientSecret: "dummy", // The dummy here is necessary if the tenant and product are set dynamically from the client side
       callbackURL: new URL(
-        "/auth/saml/callback",
+        "/auth/sso/callback",
         process.env.BASE_URL
       ).toString(), // BASE_URL should point to the application URL
     },
