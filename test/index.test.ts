@@ -91,7 +91,6 @@ describe(BoxyHQSSOStrategy, () => {
       let redirectUrl = new URL(location);
       expect(redirectUrl.hostname).toBe("jackson-demo.boxyhq.com");
       expect(redirectUrl.pathname).toBe("/api/oauth/authorize");
-      expect(redirectUrl.searchParams.get("provider")).toBe(`saml`);
     }
   });
 });
