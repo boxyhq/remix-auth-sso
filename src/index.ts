@@ -65,14 +65,6 @@ export class BoxyHQSSOStrategy<User> extends OAuth2Strategy<
     return super.authenticate(request, sessionStorage, options);
   }
 
-  protected authorizationParams(): URLSearchParams {
-    const urlSearchParams: Record<string, string> = {
-      provider: "saml",
-    };
-
-    return new URLSearchParams(urlSearchParams);
-  }
-
   protected async userProfile(accessToken: string): Promise<BoxyHQSSOProfile> {
     let response = await fetch(this.userInfoURL, {
       headers: { Authorization: `Bearer ${accessToken}` },
