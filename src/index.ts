@@ -20,8 +20,9 @@ export interface BoxyHQSSOStrategyOptions {
 export interface BoxyHQSSOProfile extends OAuth2Profile {
   id: string;
   email: string;
-  firstName?: string;
-  lastName?: string;
+  firstName: string;
+  lastName: string;
+  requested: Record<string, string>;
 }
 
 export class BoxyHQSSOStrategy<User> extends OAuth2Strategy<
