@@ -10,33 +10,34 @@ import {
  * This interface declares what configuration the strategy needs from the
  * developer to correctly work.
  */
-export interface BoxyHQSAMLStrategyOptions {
+export interface BoxyHQSSOStrategyOptions {
   issuer: string;
   clientID: string;
   clientSecret: string;
   callbackURL: string;
 }
 
-export interface BoxyHQSAMLProfile extends OAuth2Profile {
+export interface BoxyHQSSOProfile extends OAuth2Profile {
   id: string;
   email: string;
-  firstName?: string;
-  lastName?: string;
+  firstName: string;
+  lastName: string;
+  requested: Record<string, string>;
 }
 
-export class BoxyHQSAMLStrategy<User> extends OAuth2Strategy<
+export class BoxyHQSSOStrategy<User> extends OAuth2Strategy<
   User,
-  BoxyHQSAMLProfile,
+  BoxyHQSSOProfile,
   never
 > {
-  name = "boxyhq-saml";
+  name = "boxyhq-sso";
   private userInfoURL: string;
 
   constructor(
-    options: BoxyHQSAMLStrategyOptions,
+    options: BoxyHQSSOStrategyOptions,
     verify: StrategyVerifyCallback<
       User,
-      OAuth2StrategyVerifyParams<BoxyHQSAMLProfile, never>
+      OAuth2StrategyVerifyParams<BoxyHQSSOProfile, never>
     >
   ) {
     super(
@@ -65,22 +66,14 @@ export class BoxyHQSAMLStrategy<User> extends OAuth2Strategy<
     return super.authenticate(request, sessionStorage, options);
   }
 
-  protected authorizationParams(): URLSearchParams {
-    const urlSearchParams: Record<string, string> = {
-      provider: "saml",
-    };
-
-    return new URLSearchParams(urlSearchParams);
-  }
-
-  protected async userProfile(accessToken: string): Promise<BoxyHQSAMLProfile> {
+  protected async userProfile(accessToken: string): Promise<BoxyHQSSOProfile> {
     let response = await fetch(this.userInfoURL, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
 
-    let data: BoxyHQSAMLProfile = await response.json();
+    let data: BoxyHQSSOProfile = await response.json();
 
-    let profile: BoxyHQSAMLProfile = {
+    let profile: BoxyHQSSOProfile = {
       ...data,
       provider: this.name,
     };

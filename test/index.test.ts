@@ -1,7 +1,7 @@
 import { createCookieSessionStorage } from "@remix-run/server-runtime";
-import { BoxyHQSAMLStrategy } from "../src";
+import { BoxyHQSSOStrategy } from "../src";
 
-describe(BoxyHQSAMLStrategy, () => {
+describe(BoxyHQSSOStrategy, () => {
   let verify = jest.fn();
   // You will probably need a sessionStorage to test the strategy.
   let sessionStorage = createCookieSessionStorage({
@@ -19,13 +19,13 @@ describe(BoxyHQSAMLStrategy, () => {
     jest.resetAllMocks();
   });
 
-  test("should have the name of the `boxyhq-saml`", () => {
-    const strategy = new BoxyHQSAMLStrategy(options, verify);
-    expect(strategy.name).toBe("boxyhq-saml");
+  test("should have the name of the `boxyhq-sso`", () => {
+    const strategy = new BoxyHQSSOStrategy(options, verify);
+    expect(strategy.name).toBe("boxyhq-sso");
   });
 
   test("should allow setting the clientID/Secret from the options", async () => {
-    const strategy = new BoxyHQSAMLStrategy(options, verify);
+    const strategy = new BoxyHQSSOStrategy(options, verify);
 
     const request = new Request("https://example.app/auth/boxy-saml");
     try {
@@ -46,7 +46,7 @@ describe(BoxyHQSAMLStrategy, () => {
   });
 
   test("should allow setting the clientID/Secret dynamically from the context", async () => {
-    const strategy = new BoxyHQSAMLStrategy(options, verify);
+    const strategy = new BoxyHQSSOStrategy(options, verify);
 
     const request = new Request("https://example.app/auth/boxy-saml");
     try {
@@ -73,7 +73,7 @@ describe(BoxyHQSAMLStrategy, () => {
   });
 
   test("should correctly format the authorization URL", async () => {
-    const strategy = new BoxyHQSAMLStrategy(options, verify);
+    const strategy = new BoxyHQSSOStrategy(options, verify);
 
     const request = new Request("https://example.app/auth/boxy-saml");
     try {
@@ -91,7 +91,6 @@ describe(BoxyHQSAMLStrategy, () => {
       let redirectUrl = new URL(location);
       expect(redirectUrl.hostname).toBe("jackson-demo.boxyhq.com");
       expect(redirectUrl.pathname).toBe("/api/oauth/authorize");
-      expect(redirectUrl.searchParams.get("provider")).toBe(`saml`);
     }
   });
 });

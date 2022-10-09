@@ -1,11 +1,11 @@
 {
-  "name": "@boxyhq/remix-auth-saml",
+  "name": "@boxyhq/remix-auth-sso",
   "version": "1.0.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/boxyhq/remix-auth-saml"
+    "url": "https://github.com/boxyhq/remix-auth-sso"
   },
-  "description": "A SAML strategy for Remix Auth, based on the OAuth2Strategy",
+  "description": "An SSO strategy for Remix Auth, based on the OAuth2Strategy",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "scripts": {
@@ -22,7 +22,8 @@
     "authentication",
     "strategy",
     "saml2",
-    "oauth2"
+    "oauth2",
+    "openid-connect"
   ],
   "author": {
     "name": "BoxyHQ",
