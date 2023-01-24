@@ -30,7 +30,7 @@
     "email": "aswin@boxyhq.com",
     "url": "https://boxyhq.com"
   },
-  "license": "MIT",
+  "license": "Apache-2.0",
   "files": [
     "build",
     "package.json",
