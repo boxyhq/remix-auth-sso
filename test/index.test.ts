@@ -9,7 +9,7 @@ describe(BoxyHQSSOStrategy, () => {
   });
 
   const options = Object.freeze({
-    issuer: "https://jackson-demo.boxyhq.com",
+    issuer: "https://sso.eu.boxyhq.com",
     clientID: "MY_CLIENT_ID",
     clientSecret: "MY_CLIENT_SECRET",
     callbackURL: "https://example.com/callback",
@@ -89,7 +89,7 @@ describe(BoxyHQSSOStrategy, () => {
       if (!location) throw new Error("No redirect header");
 
       let redirectUrl = new URL(location);
-      expect(redirectUrl.hostname).toBe("jackson-demo.boxyhq.com");
+      expect(redirectUrl.hostname).toBe("sso.eu.boxyhq.com");
       expect(redirectUrl.pathname).toBe("/api/oauth/authorize");
     }
   });
