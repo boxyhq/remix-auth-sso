@@ -60,8 +60,8 @@ export class BoxyHQSSOStrategy<User> extends OAuth2Strategy<
     options: AuthenticateOptions
   ): Promise<User> {
     if (options.context?.clientID && options.context?.clientSecret) {
-      this.clientID = options.context.clientID;
-      this.clientSecret = options.context.clientSecret;
+      this.clientID = options.context.clientID as string;
+      this.clientSecret = options.context.clientSecret as string;
     }
     return super.authenticate(request, sessionStorage, options);
   }
