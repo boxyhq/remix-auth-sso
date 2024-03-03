@@ -1,10 +1,6 @@
-import { SessionStorage } from "@remix-run/server-runtime";
-import { AuthenticateOptions, StrategyVerifyCallback } from "remix-auth";
-import {
-  type OAuth2Profile,
-  type OAuth2StrategyVerifyParams,
-  OAuth2Strategy,
-} from "remix-auth-oauth2";
+import { SessionStorage } from '@remix-run/server-runtime';
+import { AuthenticateOptions, StrategyVerifyCallback } from 'remix-auth';
+import { type OAuth2Profile, type OAuth2StrategyVerifyParams, OAuth2Strategy } from 'remix-auth-oauth2';
 
 /**
  * This interface declares what configuration the strategy needs from the
@@ -25,20 +21,13 @@ export interface BoxyHQSSOProfile extends OAuth2Profile {
   requested: Record<string, string>;
 }
 
-export class BoxyHQSSOStrategy<User> extends OAuth2Strategy<
-  User,
-  BoxyHQSSOProfile,
-  never
-> {
-  name = "boxyhq-sso";
+export class BoxyHQSSOStrategy<User> extends OAuth2Strategy<User, BoxyHQSSOProfile, never> {
+  name = 'boxyhq-sso';
   private userInfoURL: string;
 
   constructor(
     options: BoxyHQSSOStrategyOptions,
-    verify: StrategyVerifyCallback<
-      User,
-      OAuth2StrategyVerifyParams<BoxyHQSSOProfile, never>
-    >
+    verify: StrategyVerifyCallback<User, OAuth2StrategyVerifyParams<BoxyHQSSOProfile, never>>
   ) {
     super(
       {
