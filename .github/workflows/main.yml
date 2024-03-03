@@ -1,6 +1,18 @@
 name: CI
 
-on: [push]
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches:
+      - main
+      - release
+    tags:
+      - 'beta-v*'
+  pull_request:
+    # Trigger only for PRs that target main branch
+    branches:
+      - main
 
 jobs:
   build:
